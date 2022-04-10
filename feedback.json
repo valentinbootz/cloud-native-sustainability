@@ -1,0 +1,15 @@
+{
+    "overall": {
+        "sustainability awareness": 0,
+        "microservice classification": 100,
+        "microservice enrichment": 100
+    },
+    "services": {
+        "greeter": {
+            "optional": true,
+            "handlers": {
+                "standard": {}
+            }
+        }
+    }
+}

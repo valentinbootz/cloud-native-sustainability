@@ -1,0 +1,96 @@
+{
+    "name": "CloudNativeSustainabilityPackage",
+    "uri": "http://cloud-native-sustainability",
+    "prefix": "bpmncns",
+    "types": [
+      {
+        "name": "CloudNativeSustainabilityTask",
+        "extends": [
+          "bpmn:ServiceTask"
+        ],
+        "properties": [
+          {
+            "name": "identifier",
+            "isAttr": true,
+            "type": "String"
+          },
+          {
+            "name": "description",
+            "isAttr": true,
+            "type": "String"
+          },
+          {
+            "name": "optional",
+            "isAttr": true,
+            "type": "Boolean"
+          }
+        ]
+      },
+      {
+        "name": "ExecutionModalities",
+        "superClass": [
+          "Element"
+        ],
+        "properties": [
+          {
+            "name": "standard",
+            "type": "bpmncns:StandardExecutionModality"
+          },
+          {
+            "name": "highPerformance",
+            "type": "bpmncns:HighPerformanceExecutionModality"
+          },
+          {
+            "name": "lowPower",
+            "type": "bpmncns:LowPowerExecutionModality"
+          }
+        ]
+      },
+      {
+        "name": "ExecutionModality",
+        "superClass": [
+          "Element"
+        ],
+        "properties": [
+          {
+            "name": "id",
+            "isAttr": true,
+            "type": "String"
+          },
+          {
+            "name": "name",
+            "isAttr": true,
+            "type": "String"
+          },
+          {
+            "name": "description",
+            "isAttr": true,
+            "type": "String"
+          }
+        ]
+      },
+      {
+        "name": "StandardExecutionModality",
+        "superClass": [
+          "bpmncns:ExecutionModality"
+        ],
+        "properties": []
+      },
+      {
+        "name": "HighPerformanceExecutionModality",
+        "superClass": [
+          "bpmncns:ExecutionModality"
+        ],
+        "properties": []
+      },
+      {
+        "name": "LowPowerExecutionModality",
+        "superClass": [
+          "bpmncns:ExecutionModality"
+        ],
+        "properties": []
+      }
+    ],
+    "emumerations": [],
+    "associations": []
+  }

@@ -1,0 +1,15 @@
+[
+    {
+        "id": "greeter",
+        "name": "GreeterService",
+        "description": "Say 'Hello' to someone.",
+        "optional": true,
+        "handlers": {
+            "standard": {
+                "id": "0.0",
+                "name": "HelloWorldGreeter",
+                "description": "Say 'Hello' to the world."
+            }
+        }
+    }
+]
