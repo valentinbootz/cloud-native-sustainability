@@ -1,15 +1,58 @@
 {
-    "overall": {
-        "sustainability awareness": 0,
-        "microservice classification": 100,
-        "microservice enrichment": 100
+    "scores": {
+        "sustainability awareness": 20,
+        "microservice classification": 20,
+        "microservice enrichment": 20
     },
     "services": {
-        "greeter": {
-            "optional": true,
-            "handlers": {
-                "standard": {}
-            }
+        "flight-booking": {
+            "modalities": {
+                "standard": {
+                    "requirements": {}
+                }
+            },
+            "optional": false
+        },
+        "flight-search": {
+            "modalities": {
+                "lowPower": {
+                    "requirements": {
+                        "responseTime": 1,
+                        "instanceType": "medium"
+                    }
+                },
+                "standard": {
+                    "requirements": {
+                        "responseTime": 10,
+                        "instanceType": "medium"
+                    }
+                }
+            },
+            "optional": false
+        },
+        "payment": {
+            "modalities": {
+                "standard": {
+                    "requirements": {}
+                }
+            },
+            "optional": false
+        },
+        "rental-car-booking": {
+            "modalities": {
+                "standard": {
+                    "requirements": {}
+                }
+            },
+            "optional": true
+        },
+        "weather-information": {
+            "modalities": {
+                "standard": {
+                    "requirements": {}
+                }
+            },
+            "optional": false
         }
     }
 }

@@ -1,19 +1,76 @@
 [
     {
-        "id": "greeter",
-        "name": "GreeterService",
-        "description": "Say 'Hello' to the someone.",
-        "optional": false,
-        "handlers": {
+        "id": "flight-booking",
+        "name": "Flight Booking",
+        "description": "",
+        "modalities": {
             "standard": {
-                "id": "0.0",
-                "name": "HelloWorldGreeter",
-                "description": "Say 'Hello' to the world."
-            },
+                "id": "0.2.0.0",
+                "name": "FlightBooking",
+                "description": "The flight booking service is executed when a customer selects a solution after the search microservice. It includes all the activities related to the booking, including configurations (e.g., seat selection, baggage options) and the interaction with the airline's information system."
+            }
+        }
+    },
+    {
+        "id": "rental-car-booking",
+        "name": "Rental Car Booking",
+        "description": "",
+        "optional": true,
+        "modalities": {
+            "standard": {
+                "id": "0.3.0.0",
+                "name": "RentalCarBooking",
+                "description": "The rental car booking service is proposed to the customer as an additional service. This service is provided by a partner but generates an income for the organization in case the customer books a vehicle."
+            }
+        }
+    },
+    {
+        "id": "payment",
+        "name": "Payment",
+        "description": "",
+        "modalities": {
+            "standard": {
+                "id": "0.4.0.0",
+                "name": "Payment",
+                "description": "The payment service manages all the activities related to the payment of the selected flight solution."
+            }
+        }
+    },
+    {
+        "id": "weather-information",
+        "name": "Weather Information",
+        "description": "",
+        "optional": true,
+        "modalities": {
+            "standard": {
+                "id": "0.1.0.0",
+                "name": "WeatherInformation",
+                "description": "The search service can be complemented with information useful to the customers in selecting their itinerary. A weather service shows forecasts and statistics of temperatures and precipitations for the selected destination and dates that can be valuable for the customer."
+            }
+        }
+    },
+    {
+        "id": "flight-search",
+        "name": "Flight Search",
+        "description": "",
+        "modalities": {
             "highPerformance": {
-                "id": "0.1",
-                "name": "HelloCountryGreeter",
-                "description": "Say 'Hello' to a country."          
+                "id": "0.0.0.0.1.0",
+                "name": "RecommendationFlightSearch",
+                "description": "The information in the customer profile is used to suggest routes or rank the results. This variation improves the customer experience but increases the computational cost of the service.",
+                "requirements": {
+                    "responseTime": 100,
+                    "instanceType": "large"
+                }
+            },
+            "lowPower": {
+                "id": "0.0.0.0.2.0",
+                "name": "RecentFlightSearch",
+                "description": "Results of recent searches by the same or other users are reused and the actual query is executed on-demand. This reduces the computation time and cost but generates out-of-date results (e.g., prices of tickets for an airline).",
+                "requirements": {
+                    "responseTime": 1,
+                    "instanceType": "small"
+                }
             }
         }
     }

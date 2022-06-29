@@ -1,14 +1,78 @@
 [
     {
-        "id": "greeter",
-        "name": "GreeterService",
-        "description": "Say 'Hello' to someone.",
-        "optional": true,
-        "handlers": {
+        "id": "flight-search",
+        "name": "Flight Search",
+        "optional": null,
+        "modalities": {
+            "lowPower": {
+                "id": "0.0.0.0.2.0",
+                "name": "RecentFlightSearch",
+                "description": "Results of recent searches by the same or other users are reused and the actual query is executed on-demand. This reduces the computation time and cost but generates out-of-date results (e.g., prices of tickets for an airline).",
+                "requirements": {
+                    "responseTime": 1,
+                    "instanceType": "medium"
+                }
+            },
             "standard": {
-                "id": "0.0",
-                "name": "HelloWorldGreeter",
-                "description": "Say 'Hello' to the world."
+                "id": "0.0.0.0.0.0",
+                "name": "FlightSearch",
+                "description": "The flight search service handles the search request of the customer and returns a list of flights by querying the information systems of the airlines. The order of the results depends on the properties of the flights (e.g., price, duration, number of stops).",
+                "requirements": {
+                    "responseTime": 10,
+                    "instanceType": "medium"
+                }
+            }
+        }
+    },
+    {
+        "id": "weather-information",
+        "name": "Weather Information",
+        "optional": null,
+        "modalities": {
+            "standard": {
+                "id": "0.1.0.0",
+                "name": "WeatherInformation",
+                "description": "The search service can be complemented with information useful to the customers in selecting their itinerary. A weather service shows forecasts and statistics of temperatures and precipitations for the selected destination and dates that can be valuable for the customer.",
+                "requirements": {}
+            }
+        }
+    },
+    {
+        "id": "flight-booking",
+        "name": "Flight Booking",
+        "optional": null,
+        "modalities": {
+            "standard": {
+                "id": "0.2.0.0",
+                "name": "FlightBooking",
+                "description": "The flight booking service is executed when a customer selects a solution after the search microservice. It includes all the activities related to the booking, including configurations (e.g., seat selection, baggage options) and the interaction with the airline's information system.",
+                "requirements": {}
+            }
+        }
+    },
+    {
+        "id": "rental-car-booking",
+        "name": "Rental Car Booking",
+        "optional": true,
+        "modalities": {
+            "standard": {
+                "id": "0.3.0.0",
+                "name": "RentalCarBooking",
+                "description": "The rental car booking service is proposed to the customer as an additional service. This service is provided by a partner but generates an income for the organization in case the customer books a vehicle.",
+                "requirements": {}
+            }
+        }
+    },
+    {
+        "id": "payment",
+        "name": "Payment",
+        "optional": null,
+        "modalities": {
+            "standard": {
+                "id": "0.4.0.0",
+                "name": "Payment",
+                "description": "The payment service manages all the activities related to the payment of the selected flight solution.",
+                "requirements": {}
             }
         }
     }

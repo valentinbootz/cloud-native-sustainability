@@ -26,9 +26,11 @@ class SustainableApplicationModel {
         return services;
     }
 
-    #handlers(service) {
+    #modalities(service) {
 
-        let handlers = (({
+        if (!('extensionElements' in service)) { return {}; }
+
+        let modalities = (({
             standard,
             highPerformance,
             lowPower
@@ -36,72 +38,149 @@ class SustainableApplicationModel {
             standard,
             highPerformance,
             lowPower
-        }))(service.extensionElements.values.find(value => value.$type == "bpmncns:ExecutionModalities"));
+        }))(service.extensionElements.values.find(value => value.$type == "sustainability:ExecutionModalities"));
 
-        Object.entries(handlers).forEach(([key, value]) => {
-            if (typeof value === 'undefined') delete handlers[key]
-            else handlers[key] = (({ id, name, description }) => ({ id, name, description }))(value)
+        Object.entries(modalities).forEach(([key, value]) => {
+            if (typeof value === 'undefined') delete modalities[key]
+            else {
+                let requirements = this.#requirements(value);
+                modalities[key] = (({ id, name, description }) => ({ id, name, description, requirements }))(value)
+            }
         })
 
-        return handlers;
+        return modalities;
     }
 
-    async update(services) {
+    #requirements(modality) {
+
+        if (!('requirements' in modality)) { return {}; }
+
+        let requirements = (({
+            responseTime,
+            instanceType
+        }) => ({
+            responseTime,
+            instanceType
+        }))(modality.requirements);
+
+        Object.entries(requirements).forEach(([key, value]) => {
+            if (typeof value === 'undefined') delete requirements[key]
+            else {
+                let {
+                    $type,
+                    ...requirement
+                } = value;
+                requirements[key] = requirement.value;
+            }
+        })
+
+        return requirements;
+    }
+
+    async update(services, merge = false) {
 
         const {
             rootElement: root,
         } = await this.#moddle.fromXML(this.xml);
 
         root.rootElements.map(element => {
-            element.flowElements.map(element => {
-                if (element.$type == 'bpmn:ServiceTask') {
-                    let {
-                        optional,
-                        handlers
-                    } = {
-                        ...services.find(service => {
+            if (element.$type == 'bpmn:Process') {
+                element.flowElements.map(element => {
+                    if (element.$type == 'bpmn:ServiceTask') {
+                        if ('identifier' in element) {
                             let {
-                                id
-                            } = service;
-                            return id == element.identifier;
-                        })
-                    };
-                    if (typeof optional !== 'undefined') {
-                        element.optional = optional;
-                    }
+                                optional,
+                                modalities: update
+                            } = {
+                                ...services.find(service => {
+                                    let {
+                                        id
+                                    } = service;
+                                    return id == element.identifier;
+                                })
+                            };
 
-                    let elements = element.extensionElements;
+                            if (merge) {
+                                if (typeof optional !== 'undefined') {
+                                    element.optional = optional;
+                                }
+                            } else { element.optional = optional; }
 
-                    if (!elements) {
-                        elements = this.#moddle.create("bpmn:ExtensionElements", {
-                            values: []
-                        });
-
-                        elements.$parent = element;
-                    }
-
-                    let modalities = elements.values.find(value => value.$type == "bpmncns:ExecutionModalities")
-
-                    if (!elements) {
-                        modalities = this.#moddle.create("bpmncns:ExecutionModalities", {});
-                        modalities.$parent = elements;
-                    }
-
-                    for (const [key, value] of Object.entries({
-                        standard: "bpmncns:StandardExecutionModality",
-                        highPerformance: "bpmncns:HighPerformanceExecutionModality",
-                        lowPower: "bpmncns:LowPowerExecutionModality"
-                    })) {
-                        if (key in handlers) {
-                            if (typeof modalities[key] === 'undefined') {
-                                modalities[key] = this.#moddle.create(value, handlers[key]);
-                            } else {
-                                Object.assign(modalities[key], handlers[key]);
+                            if (typeof update === 'undefined') {
+                                update = {};
                             }
+
+                            let elements = element.extensionElements;
+
+                            if (!elements) {
+                                elements = this.#moddle.create("bpmn:ExtensionElements", {
+                                    values: []
+                                });
+
+                                elements.$parent = element;
+                            }
+
+                            let modalities;
+
+                            let index = elements.values.findIndex(value => value.$type == "sustainability:ExecutionModalities");
+                            if (merge) {
+                                modalities = elements.values[index];
+                            }
+
+                            for (const [key, value] of Object.entries({
+                                standard: "sustainability:StandardExecutionModality",
+                                highPerformance: "sustainability:HighPerformanceExecutionModality",
+                                lowPower: "sustainability:LowPowerExecutionModality"
+                            })) {
+                                if (key in update) {
+
+                                    if (typeof modalities === 'undefined') {
+                                        modalities = this.#moddle.create("sustainability:ExecutionModalities", {});
+                                        modalities.$parent = elements;
+                                    }
+
+                                    let current;
+                                    if (merge && key in modalities) {
+                                        current = modalities[key]
+                                    } else {
+                                        current = {};
+                                    }
+
+                                    let requirements;
+                                    if (merge) {
+                                        requirements = current.requirements;
+                                    }
+                                    if ('requirements' in update[key]) {
+                                        let {
+                                            requirements: props
+                                        } = update[key];
+                                        if (typeof requirements === 'undefined') {
+                                            requirements = this.#moddle.create("sustainability:ServiceRequirements", {});
+                                        }
+                                        for (const [key, value] of Object.entries({
+                                            responseTime: "sustainability:ResponseTimeRequirement",
+                                            instanceType: "sustainability:InstanceTypeRequirement",
+                                        })) {
+                                            if (typeof props[key] === 'undefined') break;
+                                            let requirement = this.#moddle.create(value, {value: props[key]});
+                                            requirement.$parent = requirements;
+                                            requirements[key] = requirement;
+                                        }
+                                    }
+
+                                    let props = (({ id, name, description }) => ({ id, name, description, requirements }))({
+                                        ...current, ...update[key]
+                                    })
+                                    modalities[key] = this.#moddle.create(value, props);
+                                }
+                            }
+                            if (index !== -1) { elements.values[index] = modalities; }
+                            else { elements.values.push(modalities); }
+                            element.extensionElements = elements;
                         }
                     }
-                }
-            });
+                });
+            }
         });
 
         const {
@@ -119,9 +198,12 @@ class SustainableApplicationModel {
 
             return Object.values(services).map(service => {
 
-                let handlers = this.#handlers(service);
+                let modalities = this.#modalities(service);
 
-                return (({ identifier: id, name, description, optional }) => ({ id, name, description, optional, handlers }))(service);
+                let { optional } = service;
+                optional = optional || null;
+
+                return (({ identifier: id, name }) => ({ id, name, optional, modalities }))(service);
             });
         })();
     }
@@ -134,24 +216,34 @@ class SustainableApplicationModel {
 
             return Object.values(services).reduce((feedback, service) => {
 
-                let handlers = this.#handlers(service);
+                let modalities = this.#modalities(service);
 
                 if ("optional" in service) {
-                    feedback["overall"]["microservice classification"] += 1 / Object.keys(services).length * 100;
+                    feedback["scores"]["microservice classification"] += 1 / Object.keys(services).length * 100;
                 }
-                if (Object.keys(handlers).length) {
-                    feedback["overall"]["microservice enrichment"] += 1 / Object.keys(services).length * 100;
+                if (Object.keys(modalities).length > 1) {
+                    feedback["scores"]["microservice enrichment"] += 1 / Object.keys(services).length * 100;
+                }
+                if (Object.keys(modalities).length && Object.values(modalities).every(modality => {
+                    let requirements = modality.requirements;
+                    if (typeof requirements === 'undefined') { return false; }
+                    else { return (Object.keys(requirements).length); }
+                })) {
+                    feedback["scores"]["sustainability awareness"] += 1 / Object.keys(services).length * 100;
                 }
                 feedback["services"][service.identifier] = {
                     "optional": "optional" in service,
-                    "handlers": Object.fromEntries(
-                        Object.entries(handlers)
-                            .map(([key, _]) => [key, {}])
+                    "modalities": Object.fromEntries(
+                        Object.entries(modalities)
+                            .map(([key, value]) => {
+                                let modality = (({ requirements }) => ({ requirements }))(value)
+                                return [key, modality]
+                            })
                     )
                 }
                 return feedback;
             }, {
-                "overall": {
+                "scores": {
                     "sustainability awareness": 0,
                     "microservice classification": 0,
                     "microservice enrichment": 0

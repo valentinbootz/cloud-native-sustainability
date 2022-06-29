@@ -7,6 +7,7 @@ import services from './services.json';
 import fs from 'fs';
 const initial = fs.readFileSync('./initial-model.xml', 'utf8');
 const update = fs.readFileSync('./update-model.xml', 'utf8');
+const merge = fs.readFileSync('./merge-model.xml', 'utf8');
 
 let model;
 
@@ -24,7 +25,13 @@ describe('sustainable application model', () => {
         expect(await model.metadata).toEqual(metadata);
     });
 
-    test('update metadata', async () => {
-        expect(await model.update(services)).toEqual(update);
+    describe('update metadata', () => {
+        test('default', async () => {
+            expect(await model.update(services)).toEqual(update);
+        });
+
+        test('merge', async () => {
+            expect(await model.update(services, merge)).toEqual(merge);
+        });
     });
 });

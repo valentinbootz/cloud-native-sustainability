@@ -1,96 +1,149 @@
 {
-    "name": "CloudNativeSustainabilityPackage",
-    "uri": "http://cloud-native-sustainability",
-    "prefix": "bpmncns",
-    "types": [
-      {
-        "name": "CloudNativeSustainabilityTask",
-        "extends": [
-          "bpmn:ServiceTask"
-        ],
-        "properties": [
-          {
-            "name": "identifier",
-            "isAttr": true,
-            "type": "String"
-          },
-          {
-            "name": "description",
-            "isAttr": true,
-            "type": "String"
-          },
-          {
-            "name": "optional",
-            "isAttr": true,
-            "type": "Boolean"
-          }
-        ]
-      },
-      {
-        "name": "ExecutionModalities",
-        "superClass": [
-          "Element"
-        ],
-        "properties": [
-          {
-            "name": "standard",
-            "type": "bpmncns:StandardExecutionModality"
-          },
-          {
-            "name": "highPerformance",
-            "type": "bpmncns:HighPerformanceExecutionModality"
-          },
-          {
-            "name": "lowPower",
-            "type": "bpmncns:LowPowerExecutionModality"
-          }
-        ]
-      },
-      {
-        "name": "ExecutionModality",
-        "superClass": [
-          "Element"
-        ],
-        "properties": [
-          {
-            "name": "id",
-            "isAttr": true,
-            "type": "String"
-          },
-          {
-            "name": "name",
-            "isAttr": true,
-            "type": "String"
-          },
-          {
-            "name": "description",
-            "isAttr": true,
-            "type": "String"
-          }
-        ]
-      },
-      {
-        "name": "StandardExecutionModality",
-        "superClass": [
-          "bpmncns:ExecutionModality"
-        ],
-        "properties": []
-      },
-      {
-        "name": "HighPerformanceExecutionModality",
-        "superClass": [
-          "bpmncns:ExecutionModality"
-        ],
-        "properties": []
-      },
-      {
-        "name": "LowPowerExecutionModality",
-        "superClass": [
-          "bpmncns:ExecutionModality"
-        ],
-        "properties": []
-      }
-    ],
-    "emumerations": [],
-    "associations": []
-  }
+  "name": "CloudNativeSustainabilityPackage",
+  "uri": "valentin.bootz@icloud.com/2022/Sustainability",
+  "prefix": "sustainability",
+  "types": [
+    {
+      "name": "CloudNativeSustainabilityTask",
+      "extends": [
+        "bpmn:ServiceTask"
+      ],
+      "properties": [
+        {
+          "name": "identifier",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "description",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "optional",
+          "isAttr": true,
+          "type": "Boolean"
+        }
+      ]
+    },
+    {
+      "name": "ExecutionModalities",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "standard",
+          "type": "sustainability:StandardExecutionModality"
+        },
+        {
+          "name": "highPerformance",
+          "type": "sustainability:HighPerformanceExecutionModality"
+        },
+        {
+          "name": "lowPower",
+          "type": "sustainability:LowPowerExecutionModality"
+        }
+      ]
+    },
+    {
+      "name": "ExecutionModality",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "id",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "name",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "description",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "requirements",
+          "type": "sustainability:ServiceRequirements"
+        }
+      ]
+    },
+    {
+      "name": "StandardExecutionModality",
+      "superClass": [
+        "sustainability:ExecutionModality"
+      ],
+      "properties": []
+    },
+    {
+      "name": "HighPerformanceExecutionModality",
+      "superClass": [
+        "sustainability:ExecutionModality"
+      ],
+      "properties": []
+    },
+    {
+      "name": "LowPowerExecutionModality",
+      "superClass": [
+        "sustainability:ExecutionModality"
+      ],
+      "properties": []
+    },
+    {
+      "name": "ServiceRequirements",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "responseTime",
+          "type": "sustainability:ResponseTimeRequirement"
+        },
+        {
+          "name": "instanceType",
+          "type": "sustainability:InstanceTypeRequirement"
+        }
+      ]
+    },
+    {
+      "name": "ServiceRequirement",
+      "superClass": [
+        "Element"
+      ],
+      "properties": []
+    },
+    {
+      "name": "ResponseTimeRequirement",
+      "superClass": [
+        "sustainability:ServiceRequirement"
+      ],
+      "properties": [
+        {
+          "name": "value",
+          "isAttr": true,
+          "type": "Integer"
+        }
+      ]
+    },
+    {
+      "name": "InstanceTypeRequirement",
+      "superClass": [
+        "sustainability:ServiceRequirement"
+      ],
+      "properties": [
+        {
+          "name": "value",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+  ],
+  "emumerations": [],
+  "associations": []
+}

@@ -1,22 +1,156 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:bpmncns="http://cloud-native-sustainability" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:sustainability="valentin.bootz@icloud.com/2022/Sustainability" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
   <bpmn:process id="Process_1" isExecutable="false">
-    <bpmn:startEvent id="StartEvent_1" />
-    <bpmn:ServiceTask id="Activity_0tagals" name="GreeterService" bpmncns:identifier="greeter" bpmncns:description="Say &#39;Hello&#39; to someone." bpmncns:optional="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_1owia1k</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_1bbe4tm">
+      <bpmn:incoming>Flow_0byy3z4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:parallelGateway id="Gateway_0bqotm2">
+      <bpmn:incoming>Flow_1owia1k</bpmn:incoming>
+      <bpmn:outgoing>Flow_1flnxm7</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0e06166</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_1owia1k" sourceRef="StartEvent_1" targetRef="Gateway_0bqotm2" />
+    <bpmn:ServiceTask id="Activity_1t7gwnh" name="Flight Search" sustainability:identifier="flight-search">
       <bpmn:extensionElements>
-        <bpmncns:ExecutionModalities>
-          <bpmncns:StandardExecutionModality id="0.0" name="HelloWorldGreeter" description="Say &#39;Hello&#39; to the world." />
-        </bpmncns:ExecutionModalities>
+        <sustainability:ExecutionModalities>
+          <sustainability:StandardExecutionModality id="0.0.0.0.0.0" name="FlightSearch" description="The flight search service handles the search request of the customer and returns a list of flights by querying the information systems of the airlines. The order of the results depends on the properties of the flights (e.g., price, duration, number of stops).">
+            <sustainability:ServiceRequirements>
+              <sustainability:ResponseTimeRequirement value="10" />
+              <sustainability:InstanceTypeRequirement value="medium" />
+            </sustainability:ServiceRequirements>
+          </sustainability:StandardExecutionModality>
+          <sustainability:LowPowerExecutionModality id="0.0.0.0.2.0" name="RecentFlightSearch" description="Results of recent searches by the same or other users are reused and the actual query is executed on-demand. This reduces the computation time and cost but generates out-of-date results (e.g., prices of tickets for an airline).">
+            <sustainability:ServiceRequirements>
+              <sustainability:ResponseTimeRequirement value="1" />
+              <sustainability:InstanceTypeRequirement value="medium" />
+            </sustainability:ServiceRequirements>
+          </sustainability:LowPowerExecutionModality>
+        </sustainability:ExecutionModalities>
       </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0e06166</bpmn:incoming>
+      <bpmn:outgoing>Flow_082t6zo</bpmn:outgoing>
     </bpmn:ServiceTask>
+    <bpmn:sequenceFlow id="Flow_1flnxm7" sourceRef="Gateway_0bqotm2" targetRef="Activity_0r1jjfo" />
+    <bpmn:sequenceFlow id="Flow_0e06166" sourceRef="Gateway_0bqotm2" targetRef="Activity_1t7gwnh" />
+    <bpmn:sequenceFlow id="Flow_1vu6xt2" sourceRef="Activity_0r1jjfo" targetRef="Gateway_1fsujb9" />
+    <bpmn:sequenceFlow id="Flow_082t6zo" sourceRef="Activity_1t7gwnh" targetRef="Gateway_1fsujb9" />
+    <bpmn:sequenceFlow id="Flow_0ze87eo" sourceRef="Gateway_1fsujb9" targetRef="Activity_1ipv5yo" />
+    <bpmn:sequenceFlow id="Flow_0my98nj" sourceRef="Activity_1ipv5yo" targetRef="Activity_075p9d2" />
+    <bpmn:sequenceFlow id="Flow_0s4d6ou" sourceRef="Activity_075p9d2" targetRef="Activity_05f1dgj" />
+    <bpmn:sequenceFlow id="Flow_0byy3z4" sourceRef="Activity_05f1dgj" targetRef="Event_1bbe4tm" />
+    <bpmn:ServiceTask id="Activity_0r1jjfo" name="Weather Information" sustainability:identifier="weather-information">
+      <bpmn:extensionElements>
+        <sustainability:ExecutionModalities>
+          <sustainability:StandardExecutionModality id="0.1.0.0" name="WeatherInformation" description="The search service can be complemented with information useful to the customers in selecting their itinerary. A weather service shows forecasts and statistics of temperatures and precipitations for the selected destination and dates that can be valuable for the customer." />
+        </sustainability:ExecutionModalities>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1flnxm7</bpmn:incoming>
+      <bpmn:outgoing>Flow_1vu6xt2</bpmn:outgoing>
+    </bpmn:ServiceTask>
+    <bpmn:ServiceTask id="Activity_1ipv5yo" name="Flight Booking" sustainability:identifier="flight-booking">
+      <bpmn:extensionElements>
+        <sustainability:ExecutionModalities>
+          <sustainability:StandardExecutionModality id="0.2.0.0" name="FlightBooking" description="The flight booking service is executed when a customer selects a solution after the search microservice. It includes all the activities related to the booking, including configurations (e.g., seat selection, baggage options) and the interaction with the airline's information system." />
+        </sustainability:ExecutionModalities>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ze87eo</bpmn:incoming>
+      <bpmn:outgoing>Flow_0my98nj</bpmn:outgoing>
+    </bpmn:ServiceTask>
+    <bpmn:ServiceTask id="Activity_075p9d2" name="Rental Car Booking" sustainability:identifier="rental-car-booking" sustainability:optional="true">
+      <bpmn:extensionElements>
+        <sustainability:ExecutionModalities>
+          <sustainability:StandardExecutionModality id="0.3.0.0" name="RentalCarBooking" description="The rental car booking service is proposed to the customer as an additional service. This service is provided by a partner but generates an income for the organization in case the customer books a vehicle." />
+        </sustainability:ExecutionModalities>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0my98nj</bpmn:incoming>
+      <bpmn:outgoing>Flow_0s4d6ou</bpmn:outgoing>
+    </bpmn:ServiceTask>
+    <bpmn:ServiceTask id="Activity_05f1dgj" name="Payment" sustainability:identifier="payment">
+      <bpmn:extensionElements>
+        <sustainability:ExecutionModalities>
+          <sustainability:StandardExecutionModality id="0.4.0.0" name="Payment" description="The payment service manages all the activities related to the payment of the selected flight solution." />
+        </sustainability:ExecutionModalities>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0s4d6ou</bpmn:incoming>
+      <bpmn:outgoing>Flow_0byy3z4</bpmn:outgoing>
+    </bpmn:ServiceTask>
+    <bpmn:parallelGateway id="Gateway_1fsujb9">
+      <bpmn:incoming>Flow_1vu6xt2</bpmn:incoming>
+      <bpmn:incoming>Flow_082t6zo</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ze87eo</bpmn:outgoing>
+    </bpmn:parallelGateway>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNEdge id="Flow_0byy3z4_di" bpmnElement="Flow_0byy3z4">
+        <di:waypoint x="879" y="270" />
+        <di:waypoint x="931" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0s4d6ou_di" bpmnElement="Flow_0s4d6ou">
+        <di:waypoint x="729" y="270" />
+        <di:waypoint x="779" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0my98nj_di" bpmnElement="Flow_0my98nj">
+        <di:waypoint x="569" y="270" />
+        <di:waypoint x="629" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ze87eo_di" bpmnElement="Flow_0ze87eo">
+        <di:waypoint x="414" y="270" />
+        <di:waypoint x="469" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_082t6zo_di" bpmnElement="Flow_082t6zo">
+        <di:waypoint x="339" y="190" />
+        <di:waypoint x="389" y="190" />
+        <di:waypoint x="389" y="245" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vu6xt2_di" bpmnElement="Flow_1vu6xt2">
+        <di:waypoint x="339" y="350" />
+        <di:waypoint x="389" y="350" />
+        <di:waypoint x="389" y="295" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0e06166_di" bpmnElement="Flow_0e06166">
+        <di:waypoint x="179" y="245" />
+        <di:waypoint x="179" y="190" />
+        <di:waypoint x="239" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1flnxm7_di" bpmnElement="Flow_1flnxm7">
+        <di:waypoint x="179" y="295" />
+        <di:waypoint x="179" y="350" />
+        <di:waypoint x="239" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1owia1k_di" bpmnElement="Flow_1owia1k">
+        <di:waypoint x="118" y="270" />
+        <di:waypoint x="154" y="270" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="173" y="102" width="36" height="36" />
+        <dc:Bounds x="82" y="252" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1mlmjr4_di" bpmnElement="Activity_0tagals">
-        <dc:Bounds x="300" y="80" width="100" height="80" />
+      <bpmndi:BPMNShape id="Event_1bbe4tm_di" bpmnElement="Event_1bbe4tm">
+        <dc:Bounds x="931" y="252" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0rwpoq3_di" bpmnElement="Gateway_0bqotm2">
+        <dc:Bounds x="154" y="245" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0mi5cbg_di" bpmnElement="Activity_1t7gwnh">
+        <dc:Bounds x="239" y="150" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1a83dh4_di" bpmnElement="Activity_0r1jjfo">
+        <dc:Bounds x="239" y="310" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13341ak_di" bpmnElement="Activity_1ipv5yo">
+        <dc:Bounds x="469" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zcds37_di" bpmnElement="Activity_075p9d2">
+        <dc:Bounds x="629" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_11gjqiy_di" bpmnElement="Activity_05f1dgj">
+        <dc:Bounds x="779" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_12f14ct_di" bpmnElement="Gateway_1fsujb9">
+        <dc:Bounds x="364" y="245" width="50" height="50" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

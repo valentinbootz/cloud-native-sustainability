@@ -16,6 +16,12 @@
     <bpmn:ServiceTask id="Activity_1t7gwnh" name="Flight Search" sustainability:identifier="flight-search">
       <bpmn:extensionElements>
         <sustainability:ExecutionModalities>
+          <sustainability:StandardExecutionModality id="0.0.0.0.0.0" name="FlightSearch" description="The flight search service handles the search request of the customer and returns a list of flights by querying the information systems of the airlines. The order of the results depends on the properties of the flights (e.g., price, duration, number of stops).">
+            <sustainability:ServiceRequirements>
+              <sustainability:ResponseTimeRequirement value="10" />
+              <sustainability:InstanceTypeRequirement value="medium" />
+            </sustainability:ServiceRequirements>
+          </sustainability:StandardExecutionModality>
           <sustainability:HighPerformanceExecutionModality id="0.0.0.0.1.0" name="RecommendationFlightSearch" description="The information in the customer profile is used to suggest routes or rank the results. This variation improves the customer experience but increases the computational cost of the service.">
             <sustainability:ServiceRequirements>
               <sustainability:ResponseTimeRequirement value="100" />
